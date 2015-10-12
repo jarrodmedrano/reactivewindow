@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="node_modules/rx/dist/rx.all.js"></script>
+    <style>
+        #hello {
+            background: red;
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            left: 0;
+        }
+        #goodbye {
+            background: blue;
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            right: 0;
+        }
+        #parent {
+            border: 1px solid black;
+            overflow: auto;
+        }
+    </style>
+    <script src="jquery.min.js"></script>
+    <script type="text/javascript">
+
+        var resizeStream = Rx.Observable.fromEvent($(window), 'resize');
+
+        var hello = $('#hello');
+
+        var goodbye = $('#goodbye');
+
+
+
+        function isCollide(a, b) {
+            return !(
+                    ((a.y + a.height) < (b.y)) ||
+                    (a.y > (b.y + b.height)) ||
+                    ((a.x + a.width) < b.x) ||
+                    (a.x > (b.x + b.width))
+            );
+        }
+
+        function collidesWith (element1, element2, callback) {
+            var Element1 = {};
+            var Element2 = {};
+
+            Element1.top = $(element1).offset().top;
+            Element1.left = $(element1).offset().left;
+            Element1.right = Number($(element1).offset().left) + Number($(element1).width());
+            Element1.bottom = Number($(element1).offset().top) + Number($(element1).height());
+
+            Element2.top = $(element2).offset().top;
+            Element2.left = $(element2).offset().left;
+            Element2.right = Number($(element2).offset().left) + Number($(element2).width());
+            Element2.bottom = Number($(element2).offset().top) + Number($(element2).height());
+
+            if (Element1.right > Element2.left && Element1.left < Element2.right && Element1.top < Element2.bottom && Element1.bottom > Element2.top) {
+                return callback();
+            }
+        }
+
+        function testCallBack() {
+            console.log('COLLIDED');
+        }
+
+        window.onresize = function() {
+            hello = $('#hello');
+            goodbye = $('#goodbye');
+            collidesWith(hello,goodbye,testCallBack);
+        }
+
+//        var subscription = resizeStream.subscribe(
+//                function (x) {
+//                    hello = $('#hello');
+//                    goodbye = $('#goodbye');
+//                    collidesWith(hello,goodbye,testCallBack);
+//                },
+//                function (err) {
+//                    console.log('Error: ' + err);
+//                },
+//                function () {
+//                    console.log('Completed');
+//                }
+//        );
+
+    </script>
+</head>
+<body>
+    <div id="parent">
+        <div id="hello"></div><div id="goodbye"></div>
+    </div>
+</body>
+</html>
