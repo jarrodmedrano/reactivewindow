@@ -54,6 +54,8 @@
                     }
                 })();
 
+                collision(block1,block2);
+
                 function collision (el1, el2) {
                     var el1Pos = {};
                     var el2Pos = {};
@@ -69,9 +71,7 @@
                     } else {
                         $('#message').text('NOT COLLIDED!');
                     }
-                }()
-
-                collision(block1,block2);
+                }
 
                 var resizeStream = Rx.Observable.fromEvent($(window), 'resize')
                         .debounce(500);
