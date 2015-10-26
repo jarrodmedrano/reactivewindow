@@ -4,45 +4,48 @@
     <meta charset="UTF-8">
     <title></title>
     <script src="node_modules/rx/dist/rx.all.js"></script>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <style>
-        #hello {
-            background: red;
+        #red-robot {
             width: 100px;
             height: 100px;
-            position: absolute;
             left: 0;
+            position: absolute;
+            background: red url('img/red.png');
+            background-size: 100% auto;
+            background-position: 0 0;
         }
-        #goodbye {
-            background: blue;
+        #blue-robot {
             width: 100px;
             height: 100px;
             position: absolute;
             right: 0;
+            background: blue url('img/blue.png');
+            background-size: 100% auto;
+            background-position: 0 0;
         }
         #parent {
-            border: 1px solid black;
             overflow: auto;
+        }
+        #message {
+            margin-top: 140px;
+            font-size: 24px;
+            text-transform: uppercase;
+        }
+        #layout {
+            padding: 0 2em;
         }
     </style>
     <script src="jquery.min.js"></script>
     <script type="text/javascript">
-
+        (function(){
+        $(document).ready(function(){
         var resizeStream = Rx.Observable.fromEvent($(window), 'resize');
 
         var hello = $('#hello');
 
         var goodbye = $('#goodbye');
 
-
-
-        function isCollide(a, b) {
-            return !(
-                    ((a.y + a.height) < (b.y)) ||
-                    (a.y > (b.y + b.height)) ||
-                    ((a.x + a.width) < b.x) ||
-                    (a.x > (b.x + b.width))
-            );
-        }
 
         function collidesWith (element1, element2, callback) {
             var Element1 = {};
@@ -63,35 +66,60 @@
             }
         }
 
-        function testCallBack() {
-            console.log('COLLIDED');
+        function isCollided() {
+            $('#message').text('COLLIDED!');
         }
 
-        window.onresize = function() {
-            hello = $('#hello');
-            goodbye = $('#goodbye');
-            collidesWith(hello,goodbye,testCallBack);
-        }
 
-//        var subscription = resizeStream.subscribe(
-//                function (x) {
-//                    hello = $('#hello');
-//                    goodbye = $('#goodbye');
-//                    collidesWith(hello,goodbye,testCallBack);
-//                },
-//                function (err) {
-//                    console.log('Error: ' + err);
-//                },
-//                function () {
-//                    console.log('Completed');
-//                }
-//        );
+       var subscription = resizeStream.subscribe(
+               function (x) {
+                   hello = $('#red-robot');
+                   goodbye = $('#blue-robot');
+                   collidesWith(hello,goodbye,isCollided);
+               },
+               function (err) {
+                   console.log('Error: ' + err);
+               },
+               function () {
+                   console.log('Completed');
+               }
+       );
+
+        $('#popup').click(function() {
+            var mywindow = window.open('index.html', '', 'scrollbars=0,height=400,width=400');
+            if (window.focus)
+            {
+                mywindow.focus();
+            }
+            return false;
+        });
+    });
+
+    }());
 
     </script>
 </head>
-<body>
-    <div id="parent">
-        <div id="hello"></div><div id="goodbye"></div>
+<div>
+    <div id="layout">
+            <div id="main">
+            <div class="hero">
+                <div id="parent">
+                    <div id="red-robot" class="robot"></div>
+                    <div id="blue-robot" class="robot"></div>
+                </div>
+
+                <div class="hero-cta">
+                    <h1 id="message">
+                        Not Collided
+                    </h1>
+                    <p>Using RxJs streams to detect window resize.
+                        Resize the window until the boxes collide.</p>
+                    <p>
+                        <a id="popup" class="button-cta pure-button pure-button-primary">Open as pop-up</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
