@@ -1,0 +1,29 @@
+#red-robot {
+    width: 100px;
+    height: 100px;
+    left: 0;
+    position: absolute;
+    background: red url('../img/red.png');
+    background-size: 100% auto;
+    background-position: 0 0;
+}
+#blue-robot {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    right: 0;
+    background: blue url('../img/blue.png');
+    background-size: 100% auto;
+    background-position: 0 0;
+}
+#parent {
+    overflow: auto;
+}
+#message {
+    margin-top: 140px;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+#layout {
+    padding: 0 2em;
+}
