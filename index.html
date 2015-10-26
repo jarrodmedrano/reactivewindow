@@ -39,62 +39,78 @@
     <script src="jquery.min.js"></script>
     <script type="text/javascript">
         (function(){
-        $(document).ready(function(){
-        var resizeStream = Rx.Observable.fromEvent($(window), 'resize');
+            $(document).ready(function(){
 
-        var hello = $('#hello');
+                var block1 = $('#red-robot');
+                var block2 = $('#blue-robot');
 
-        var goodbye = $('#goodbye');
+                var popupbtn = $('#popup');
+                var isOpen = "false";
 
+                (function(){
+                    if (!window.opener) {
+                    } else {
+                        popupbtn.text('Close this window');
+                    }
+                })();
 
-        function collidesWith (element1, element2, callback) {
-            var Element1 = {};
-            var Element2 = {};
+                function collision (el1, el2) {
+                    var el1Pos = {};
+                    var el2Pos = {};
 
-            Element1.top = $(element1).offset().top;
-            Element1.left = $(element1).offset().left;
-            Element1.right = Number($(element1).offset().left) + Number($(element1).width());
-            Element1.bottom = Number($(element1).offset().top) + Number($(element1).height());
+                    el1Pos.left = $(el1).offset().left;
+                    el1Pos.right = Number($(el1).offset().left) + Number($(el1).width());
 
-            Element2.top = $(element2).offset().top;
-            Element2.left = $(element2).offset().left;
-            Element2.right = Number($(element2).offset().left) + Number($(element2).width());
-            Element2.bottom = Number($(element2).offset().top) + Number($(element2).height());
+                    el2Pos.left = $(el2).offset().left;
+                    el2Pos.right = Number($(el2).offset().left) + Number($(el2).width());
 
-            if (Element1.right > Element2.left && Element1.left < Element2.right && Element1.top < Element2.bottom && Element1.bottom > Element2.top) {
-                return callback();
-            }
-        }
+                    if (el1Pos.right > el2Pos.left && el1Pos.left < el2Pos.right) {
+                        $('#message').text('COLLIDED!');
+                    } else {
+                        $('#message').text('NOT COLLIDED!');
+                    }
+                }()
 
-        function isCollided() {
-            $('#message').text('COLLIDED!');
-        }
+                collision(block1,block2);
 
+                var resizeStream = Rx.Observable.fromEvent($(window), 'resize')
+                        .debounce(500);
 
-       var subscription = resizeStream.subscribe(
-               function (x) {
-                   hello = $('#red-robot');
-                   goodbye = $('#blue-robot');
-                   collidesWith(hello,goodbye,isCollided);
-               },
-               function (err) {
-                   console.log('Error: ' + err);
-               },
-               function () {
-                   console.log('Completed');
-               }
-       );
+                var resizeSub = resizeStream.subscribe(
+                   function (x) {
 
-        $('#popup').click(function() {
-            var mywindow = window.open('index.html', '', 'scrollbars=0,height=400,width=400');
-            if (window.focus)
-            {
-                mywindow.focus();
-            }
-            return false;
+                       collision(block1,block2);
+                   },
+                   function (err) {
+                       console.log('Error: ' + err);
+                   },
+                   function () {
+                       console.log('Completed');
+                   }
+               );
+
+                var clickSource = Rx.Observable.fromEvent(popupbtn, 'click');
+
+                var clickSub = clickSource.subscribe(
+                    function (x) {
+                        checkWindow();
+                    },
+                    function (err) {
+                        console.log('Error: ' + err);
+                    },
+                    function () {
+                        console.log('Completed');
+                });
+
+                var checkWindow = function() {
+                    if (!window.opener) {
+                        var mywindow = window.open('index.html', '', 'scrollbars=0,height=400,width=400');
+                    } else {
+
+                        window.close();
+                    }
+                }
         });
-    });
-
     }());
 
     </script>
@@ -110,7 +126,6 @@
 
                 <div class="hero-cta">
                     <h1 id="message">
-                        Not Collided
                     </h1>
                     <p>Using RxJs streams to detect window resize.
                         Resize the window until the boxes collide.</p>
