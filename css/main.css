@@ -7,6 +7,7 @@
     background-size: 100% auto;
     background-position: 0 0;
 }
+
 #blue-robot {
     width: 100px;
     height: 100px;
@@ -16,14 +17,40 @@
     background-size: 100% auto;
     background-position: 0 0;
 }
+
 #parent {
     overflow: auto;
 }
+
 #message {
     margin-top: 140px;
     font-size: 24px;
     text-transform: uppercase;
 }
+
 #layout {
     padding: 0 2em;
+}
+
+.banner {
+    width: 500px;
+    height: 100px;
+    display: block;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 100px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 24px;
+}
+
+.banner-1 {
+    background: blue;
+}
+
+.banner-2 {
+    background: red;
+}
+
+.banner-3 {
+    background: yellow;
 }
